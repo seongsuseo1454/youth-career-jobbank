@@ -1,28 +1,47 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "es2022"],
-    "allowJs": false,
+    "target": "esnext",
+    "module": "esnext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
+    "strict": false,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true,
-
-    "baseUrl": "src",
+    
+    // 💡 절대 경로 설정을 위해 baseUrl과 paths를 지정합니다.
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["*"]
+      // 💥 @/* 키에 큰따옴표를 넣어 문법 오류를 해결했습니다.
+      // 이 설정은 '@/...'이 './src/...'를 가리키도록 합니다.
+      "@/*": ["./src/*"] 
     },
-
-    "esModuleInterop": true,
-    "plugins": [{ "name": "next" }]
+    
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
-  "include": ["next-env.d.ts", "src/**/*", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

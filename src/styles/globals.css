@@ -1,0 +1,42 @@
+/* Tailwind layers */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* -------- 기본 라이트 스킨(글자 가독성 보장) -------- */
+@layer base {
+  :root { color-scheme: light; }
+  html, body { height: 100%; }
+  body { @apply bg-white text-gray-900 antialiased; }
+  a { @apply no-underline text-inherit; }
+  button:focus-visible { @apply outline-none ring-2 ring-brand/50; }
+}
+
+/* -------- 필요 시만 쓰는 '검정 히어로' 래퍼 -------- */
+@layer components {
+  .dark-hero { @apply bg-black text-white; }
+  .dark-hero .btn-ghost { @apply bg-white/10 text-white hover:bg-white/20; }
+}
+
+/* 편의 유틸 */
+@layer utilities {
+  .safe-px { @apply px-4 sm:px-6; }
+  .safe-py { @apply py-4 sm:py-6; }
+}
+
+/* === Kiosk 보강 (추가) ======================== */
+.kiosk { font-size: 18px; }
+.kiosk button, .kiosk a { min-height: 44px; }
+
+/* 키오스크에서 자주 쓰는 메인 버튼 확대용 유틸 */
+.btn-primary {
+  /* 데스크탑 기본값 (작동 안하는 페이지도 안전) */
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  font-weight: 700;
+}
+.kiosk .btn-primary {
+  /* 키오스크에서만 좀 더 크게 */
+  padding: 0.9rem 1.2rem;
+  font-size: 1.125rem;
+}

@@ -1,31 +1,23 @@
+// [제목] 개별 체험 진입 페이지(키 기반)
 'use client';
-import { useState } from 'react';
-import StepProgress from '@/components/StepProgress';
-import StepNav from '@/components/StepNav';
-import { useCareerStore } from '../_store';
 
-export default function ExperiencePage() {
-  const [title, setTitle] = useState('웹툰 작가 체험');
-  const [artifact, setArtifact] = useState<string | undefined>();
-  const setExperience = useCareerStore((s) => s.setExperience);
+import { useParams, useRouter } from 'next/navigation';
 
-  async function runExperience() {
-    const res = await fetch('/api/career/experience', { method: 'POST', body: JSON.stringify({ title }) });
-    const data = await res.json();
-    setArtifact(data.artifactUrl);
-    setExperience({ title, artifactUrl: data.artifactUrl });
-  }
+export default function Page() {
+  const { key } = useParams<{ key: string }>();
+  const router = useRouter();
 
   return (
-    <div className="mx-auto max-w-2xl p-6 space-y-6">
-      <h2 className="text-xl font-bold">진로 직업 체험</h2>
-      <StepProgress />
-      <div className="grid gap-2">
-        <input className="border rounded px-3 py-2" value={title} onChange={e=>setTitle(e.target.value)} />
-        <button className="px-3 py-2 border rounded" onClick={runExperience}>체험 생성</button>
+    <main className="mx-auto max-w-3xl px-5 py-10">
+      <h1 className="text-2xl sm:text-3xl font-extrabold">체험: {key}</h1>
+      <p className="text-gray-600 mt-2">여기에 해당 직업의 체험 UI가 들어갑니다.</p>
+
+      <textarea className="mt-6 w-full border rounded p-3 min-h-[140px]" placeholder="체험 아이디어/메모를 입력해주세요" />
+
+      <div className="mt-4 flex gap-2">
+        <button onClick={() => router.back()} className="px-4 py-2 rounded-md border">← 뒤로</button>
+        <button className="px-4 py-2 rounded-md bg-black text-white">분석으로 →</button>
       </div>
-      {artifact && <div className="p-3 border rounded bg-gray-50 text-sm">체험 산출물: <a className="underline" href={artifact} target="_blank">보기</a></div>}
-      <StepNav prev="/career/analysis" next="/career/result" disableNext={!artifact}/>
-    </div>
+    </main>
   );
 }
