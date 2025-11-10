@@ -1,5 +1,5 @@
 {
-  "name": "youth-career-experience", 
+  "name": "youth-career-jobbank", 
   "private": true,
   "scripts": {
     "dev": "next dev -p 3070",
