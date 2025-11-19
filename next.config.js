@@ -1,8 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  swcMinify: true,
   output: 'standalone',
-}
+  trailingSlash: true,  // ← 이 줄 추가!
+  images: {
+    unoptimized: true,  // Cloudflare 이미지 최적화 우회
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
