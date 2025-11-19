@@ -1,11 +1,10 @@
-// next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',        // 이 한 줄이 제일 중요
-  trailingSlash: true,
+  output: 'standalone',
+  trailingSlash: true,        // 슬래시 자동 추가
   images: {
-    unoptimized: true
-  }
+    unoptimized: true         // Cloudflare 이미지 오류 방지
+  },
 };
 
 module.exports = nextConfig;
