@@ -1,11 +1,11 @@
+// next.config.js
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
-  experimental: {
-    outputStandalone: true   // 이 한 줄이 진짜 핵심!
-  },
+  output: 'standalone',        // 이 한 줄이 제일 중요
   trailingSlash: true,
-  images: { unoptimized: true }
+  images: {
+    unoptimized: true
+  }
 };
 
 module.exports = nextConfig;
