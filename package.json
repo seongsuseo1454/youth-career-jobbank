@@ -5,7 +5,8 @@
     "dev": "next dev -p 3070",
     "build": "next build",
     "start": "next start -p 3070",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cloudflare-build": "next build"
   },
   "dependencies": {
     "clsx": "^2.1.1",
