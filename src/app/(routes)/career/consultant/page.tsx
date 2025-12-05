@@ -84,7 +84,6 @@ export default function Page() {
       )}
 
       <AvatarPieWheel
-        avatars={AVATARS}
         onNext={(a) => r.push(`/video?counselor=${encodeURIComponent(a.name)}`)}
       />
     </main>
