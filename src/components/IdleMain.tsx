@@ -3,6 +3,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+
 
 type Theme = "space" | "ocean" | "mountain-lake";
 
@@ -14,10 +16,19 @@ const IMG: Record<Theme, string> = {
 };
 
 export default function IdleMain() {
+  const router = useRouter();
   const [theme, setTheme] = useState<Theme>("space");
   const [bgmOn, setBgmOn] = useState(true);
   const [needsKick, setNeedsKick] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  // 로그아웃 함수
+  const handleLogout = () => {
+    if (confirm('로그아웃 하시겠습니까?')) {
+      sessionStorage.removeItem('youth_career_authenticated');
+      router.push('/enter-code');
+    }
+  };
 
   // 12초마다 자동 테마 순환
   useEffect(() => {
@@ -54,7 +65,7 @@ export default function IdleMain() {
       await audioRef.current?.play();
       setNeedsKick(false);
       setBgmOn(true);
-    } catch {}
+    } catch { }
   };
 
   return (
@@ -88,7 +99,7 @@ export default function IdleMain() {
         {/* 액션 */}
         <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            href="/wheel"
+            href="/career/consultant"
             className="w-full sm:w-auto rounded-xl bg-emerald-500 px-5 py-3 text-base font-semibold text-black hover:bg-emerald-400 transition"
           >
             청소년 진로체험 시작 →
@@ -107,6 +118,13 @@ export default function IdleMain() {
             className="w-full sm:w-auto rounded-xl bg-white/10 px-5 py-3 text-base font-semibold text-white hover:bg-white/20 transition"
           >
             {bgmOn ? "배경음 OFF" : "배경음 ON"}
+          </button>
+
+          <button
+            onClick={handleLogout}
+            className="w-full sm:w-auto rounded-xl bg-red-500/80 px-5 py-3 text-base font-semibold text-white hover:bg-red-500 transition"
+          >
+            로그아웃
           </button>
         </div>
 

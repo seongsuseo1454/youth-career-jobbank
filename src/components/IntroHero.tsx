@@ -24,7 +24,7 @@ export default function IntroHero({ mode = 'desktop' }: { mode?: 'desktop' | 'ki
 
       <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link
-          href="/wheel"
+          href="/career/consultant"
           className="w-full sm:w-auto rounded-xl bg-emerald-500 px-5 py-3 text-base font-semibold text-black hover:bg-emerald-400 transition"
         >
           청소년 진로체험 시작 →

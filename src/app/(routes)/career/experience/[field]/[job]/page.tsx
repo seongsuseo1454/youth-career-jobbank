@@ -1,12 +1,13 @@
 // src/app/(routes)/career/experience/[field]/[job]/page.tsx
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 
 // ✅ 공용 레지스트리 (경로 그대로 유지)
 import { getJobBank, getJobIndex } from '../../../../../../registry';
 import type { QuestionSet, Question, JobDef } from '@/lib/careers/types';
+import { speak, cancel } from '@/lib/tts';
 
 // -------------------- 유틸 --------------------
 const toGrade = (v?: string | null): keyof QuestionSet => {
@@ -34,10 +35,49 @@ export default function ExperienceJobPage() {
   // 쿼리 유지
   const keepQS = useMemo(() => {
     const keep = new URLSearchParams();
-    ['counselor','name','school','grade','classroom','goal','level','field','interest']
+    ['counselor', 'name', 'school', 'grade', 'classroom', 'goal', 'level', 'field', 'interest']
       .forEach(k => { const v = sp.get(k); if (v) keep.set(k, v); });
     return keep.toString();
   }, [sp]);
+
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  useEffect(() => {
+    const message = "생소한 문제일 수도 있습니다. 총 5문항을 소심껏 풀어보시고, 제출하고 결과를 눌러보세요.";
+
+    // 1. 자동 재생 시도
+    const timer = setTimeout(() => {
+      setIsSpeaking(true);
+      speak(message, () => setIsSpeaking(false));
+    }, 500);
+
+    // 2. 클릭 시 재생 (폴백)
+    const handleFirstClick = () => {
+      if (!isSpeaking) {
+        setIsSpeaking(true);
+        speak(message, () => setIsSpeaking(false));
+      }
+      document.removeEventListener('click', handleFirstClick);
+    };
+    document.addEventListener('click', handleFirstClick);
+
+    return () => {
+      clearTimeout(timer);
+      cancel();
+      document.removeEventListener('click', handleFirstClick);
+    };
+  }, []);
+
+  const handleToggleSpeak = () => {
+    if (isSpeaking) {
+      cancel();
+      setIsSpeaking(false);
+    } else {
+      const message = "생소한 문제일 수도 있습니다. 총 5문항을 소심껏 풀어보시고, 제출하고 결과를 눌러보세요.";
+      setIsSpeaking(true);
+      speak(message, () => setIsSpeaking(false));
+    }
+  };
 
   // ✅ 직업명: 레지스트리에서 가져와 표기(30개 직업 모두 자동 노출)
   const jobMeta: JobDef = getJobIndex(field, job) ?? { key: job, title: job, field: field || '' };
@@ -84,12 +124,23 @@ export default function ExperienceJobPage() {
           <h1 className="text-2xl font-extrabold text-indigo-700">
             직업테마 체험: {jobTitle}
           </h1>
-          <button
-            onClick={() => router.push(`/career/themes?${sp.toString()}`)}
-            className="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg"
-          >
-            ← 테마 다시 선택
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleToggleSpeak}
+              className={`px-4 py-2 rounded-lg font-bold text-sm transition-all flex items-center gap-2 ${isSpeaking
+                ? 'bg-red-500 text-white animate-pulse'
+                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                }`}
+            >
+              {isSpeaking ? '🔊 중지' : '🔈 듣기'}
+            </button>
+            <button
+              onClick={() => router.push(`/career/themes?${sp.toString()}`)}
+              className="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 rounded-lg"
+            >
+              ← 테마 다시 선택
+            </button>
+          </div>
         </div>
 
         {/* 진행바 */}
@@ -115,11 +166,10 @@ export default function ExperienceJobPage() {
             <button
               key={i}
               onClick={() => handleChoice(i)}
-              className={`w-full text-left p-4 rounded-xl border-2 ${
-                answers[step] === i
-                  ? 'border-indigo-600 bg-indigo-50 text-indigo-800'
-                  : 'border-gray-200 hover:border-indigo-400'
-              }`}
+              className={`w-full text-left p-4 rounded-xl border-2 ${answers[step] === i
+                ? 'border-indigo-600 bg-indigo-50 text-indigo-800'
+                : 'border-gray-200 hover:border-indigo-400'
+                }`}
             >
               {opt}
             </button>
@@ -143,11 +193,10 @@ export default function ExperienceJobPage() {
             <button
               onClick={goReport}
               disabled={!allCorrect}
-              className={`px-6 py-3 rounded-xl font-bold text-white ${
-                allCorrect
-                  ? 'bg-emerald-600 hover:bg-emerald-700'
-                  : 'bg-gray-400 cursor-not-allowed'
-              }`}
+              className={`px-6 py-3 rounded-xl font-bold text-white ${allCorrect
+                ? 'bg-emerald-600 hover:bg-emerald-700'
+                : 'bg-gray-400 cursor-not-allowed'
+                }`}
             >
               ✅ 결과보기
             </button>
@@ -155,11 +204,10 @@ export default function ExperienceJobPage() {
             <button
               onClick={next}
               disabled={answers[step] === -1}
-              className={`px-6 py-3 rounded-xl font-bold text-white ${
-                answers[step] !== -1
-                  ? 'bg-blue-600 hover:bg-blue-700'
-                  : 'bg-gray-400 cursor-not-allowed'
-              }`}
+              className={`px-6 py-3 rounded-xl font-bold text-white ${answers[step] !== -1
+                ? 'bg-blue-600 hover:bg-blue-700'
+                : 'bg-gray-400 cursor-not-allowed'
+                }`}
             >
               다음 →
             </button>
